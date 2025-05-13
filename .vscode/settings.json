@@ -1,9 +1,0 @@
-{
-    "files.exclude": {
-        "**/target": true,
-        "**/.git": true,
-        "**/*md": true,
-        "**/*mvn*": true,
-        "*/.vscode": true, // Matches all .vscode folders within subfolders.
-    }
-}   
