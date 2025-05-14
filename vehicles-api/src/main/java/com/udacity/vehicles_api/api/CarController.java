@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
@@ -27,15 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/cars")
+@RequiredArgsConstructor
 class CarController {
-
     private final CarService carService;
     private final CarResourceAssembler assembler;
-
-    CarController(CarService carService, CarResourceAssembler assembler) {
-        this.carService = carService;
-        this.assembler = assembler;
-    }
 
     /**
      * Creates a list to store any vehicles.
