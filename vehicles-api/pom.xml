@@ -30,11 +30,14 @@
         <dependency> <groupId>com.sun.xml.ws</groupId> <artifactId>jaxws-rt</artifactId> <version>2.3.2</version> <type>pom</type> </dependency>
         <dependency> <groupId>javax.activation</groupId> <artifactId>activation</artifactId> <version>1.1.1</version> </dependency>
         <dependency> <groupId>org.modelmapper</groupId> <artifactId>modelmapper</artifactId> <version>2.3.2</version> </dependency>
-    </dependencies>
+        <dependency> <groupId>org.springdoc</groupId> <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId> <version>2.5.0</version> </dependency>
+        <dependency> <groupId>org.projectlombok</groupId> <artifactId>lombok</artifactId> <optional>true</optional> </dependency>
+        </dependencies>
 
     <build>
         <plugins>
-            <plugin> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-maven-plugin</artifactId> </plugin>
+            <plugin> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-maven-plugin</artifactId> <configuration> <excludes> <exclude> <groupId>org.projectlombok</groupId> <artifactId>lombok</artifactId> </exclude> </excludes> </configuration> </plugin>
+            <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-compiler-plugin</artifactId> <configuration> <annotationProcessorPaths> <path> <groupId>org.projectlombok</groupId> <artifactId>lombok</artifactId> </path> </annotationProcessorPaths> </configuration> </plugin>
             <plugin> <groupId>org.apache.cxf</groupId> <artifactId>cxf-codegen-plugin</artifactId> <version>4.0.3</version> </plugin>
             <plugin> <groupId> org.jvnet.jaxb</groupId> <artifactId>jaxb-maven-plugin</artifactId> <version>4.0.0</version> </plugin>
         </plugins>
