@@ -39,10 +39,8 @@ class CarController {
      */
     @GetMapping
     CollectionModel<EntityModel<Car>> list() {
-        List<EntityModel<Car>> resources = carService.list().stream().map(assembler::toModel)
-                .collect(Collectors.toList());
-        return CollectionModel.of(resources,
-                linkTo(methodOn(CarController.class).list()).withSelfRel());
+        List<EntityModel<Car>> resources = carService.list().stream().map(assembler::toModel).collect(Collectors.toList());
+        return CollectionModel.of(resources, linkTo(methodOn(CarController.class).list()).withSelfRel());
     }
 
     /**
