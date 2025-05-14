@@ -50,12 +50,8 @@ class CarController {
      */
     @GetMapping("/{id}")
     EntityModel<Car> get(@PathVariable Long id) {
-        /**
-         * TODO: Use the `findById` method from the Car Service to get car information.
-         * TODO: Use the `assembler` on that car and return the resulting output.
-         *   Update the first line as part of the above implementing.
-         */
-        return assembler.toModel(new Car());
+        Car car = carService.findById(id);
+        return assembler.toModel(car);
     }
 
     /**
@@ -66,17 +62,9 @@ class CarController {
      */
     @PostMapping
     ResponseEntity<?> post(@Valid @RequestBody Car car) throws URISyntaxException {
-        /**
-         * TODO: Use the `save` method from the Car Service to save the input car.
-         * TODO: Use the `assembler` on that saved car and return as part of the response.
-         *   Update the first line as part of the above implementing.
-         */
-        EntityModel<Car> resource = assembler.toModel(new Car());
-
-        //Note: There will be error on this line till above TODOs are implemented
-        return ResponseEntity.created(new URI(resource.getRequiredLink("self").expand().getHref())).body(resource);     
-
-        
+        Car savedCar = carService.save(car);
+        EntityModel<Car> resource = assembler.toModel(savedCar);
+        return ResponseEntity.created(new URI(resource.getRequiredLink("self").getHref())).body(resource);     
     }
 
     /**
@@ -87,13 +75,9 @@ class CarController {
      */
     @PutMapping("/{id}")
     ResponseEntity<?> put(@PathVariable Long id, @Valid @RequestBody Car car) {
-        /**
-         * TODO: Set the id of the input car object to the `id` input.
-         * TODO: Save the car using the `save` method from the Car service
-         * TODO: Use the `assembler` on that updated car and return as part of the response.
-         *   Update the first line as part of the above implementing.
-         */
-        EntityModel<Car> resource = assembler.toModel(new Car());
+        car.setId(id);
+        Car updatedCar = carService.save(car);
+        EntityModel<Car> resource = assembler.toModel(updatedCar);
         return ResponseEntity.ok(resource);
     }
 
@@ -104,9 +88,7 @@ class CarController {
      */
     @DeleteMapping("/{id}")
     ResponseEntity<?> delete(@PathVariable Long id) {
-        /**
-         * TODO: Use the Car Service to delete the requested vehicle.
-         */
+        carService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
