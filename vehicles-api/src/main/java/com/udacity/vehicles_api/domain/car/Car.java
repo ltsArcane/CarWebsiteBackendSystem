@@ -9,6 +9,7 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Transient;
 import jakarta.validation.Valid;
@@ -26,7 +27,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 @Data
 public class Car {
-    @Id @GeneratedValue private Long id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
     @CreatedDate private LocalDateTime createdAt;
     @LastModifiedDate private LocalDateTime modifiedAt;
     @NotNull @Enumerated(EnumType.STRING) private Condition condition;
