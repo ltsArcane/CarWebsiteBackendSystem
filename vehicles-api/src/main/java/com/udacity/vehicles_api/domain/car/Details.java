@@ -5,13 +5,14 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  * Declares the additional detail variables for each Car object, along with related methods for access and setting.
  */
-@Embeddable @Data @NoArgsConstructor
+@Embeddable @Data @NoArgsConstructor @AllArgsConstructor
 public class Details {
     @NotBlank private String body;
     @NotBlank private String model;
