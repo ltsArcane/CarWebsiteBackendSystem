@@ -39,7 +39,8 @@ class CarController {
      */
     @GetMapping
     CollectionModel<EntityModel<Car>> list() {
-        List<EntityModel<Car>> resources = carService.list().stream().map(assembler::toModel).collect(Collectors.toList());
+        // By mapping each car with .findById(), we trigger the Map and Price WebClient calls.
+        List<EntityModel<Car>> resources = carService.list().stream().map(car -> carService.findById(car.getId())).map(assembler::toModel).collect(Collectors.toList());
         return CollectionModel.of(resources, linkTo(methodOn(CarController.class).list()).withSelfRel());
     }
 
