@@ -2,11 +2,10 @@ package com.udacity.vehicles_api.api;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.udacity.vehicles_api.client.maps.MapsClient;
-import com.udacity.vehicles_api.client.prices.PriceClient;
 import com.udacity.vehicles_api.domain.Condition;
 import com.udacity.vehicles_api.domain.Location;
 import com.udacity.vehicles_api.domain.car.Car;
@@ -26,6 +25,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.hamcrest.Matchers.containsString;
+
 /**
  * Implements testing of the CarController class.
  */
@@ -33,21 +37,9 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
 public class CarControllerTest {
-
-    @Autowired
-    private MockMvc mvc;
-
-    @Autowired
-    private JacksonTester<Car> json;
-
-    @MockitoBean
-    private CarService carService;
-
-    @MockitoBean
-    private PriceClient priceClient;
-
-    @MockitoBean
-    private MapsClient mapsClient;
+    @Autowired private MockMvc mvc;
+    @Autowired private JacksonTester<Car> json;
+    @MockitoBean private CarService carService;
 
     /**
      * Creates pre-requisites for testing, such as an example car.
@@ -82,12 +74,29 @@ public class CarControllerTest {
      */
     @Test
     public void listCars() throws Exception {
-        /**
-         * TODO: Add a test to check that the `get` method works by calling
-         *   the whole list of vehicles. This should utilize the car from `getCar()`
-         *   below (the vehicle will be the first in the list).
-         */
 
+        Car car = carService.list().get(0);
+        String path = "$._embedded.carList[0].";
+
+        mvc.perform(get("/cars"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/hal+json"))
+                .andExpect(jsonPath(path + "id").value(car.getId()))
+                .andExpect(jsonPath(path + "condition").value(car.getCondition().toString()))
+                .andExpect(jsonPath(path + "details.manufacturer.name").value(car.getDetails().getManufacturer().getName()))
+                .andExpect(jsonPath(path + "details.manufacturer.code").value(car.getDetails().getManufacturer().getCode()))
+                .andExpect(jsonPath(path + "details.body").value(car.getDetails().getBody()))
+                .andExpect(jsonPath(path + "details.model").value(car.getDetails().getModel()))
+                .andExpect(jsonPath(path + "details.engine").value(car.getDetails().getEngine()))
+                .andExpect(jsonPath(path + "details.fuelType").value(car.getDetails().getFuelType()))
+                .andExpect(jsonPath(path + "details.numberOfDoors").value(car.getDetails().getNumberOfDoors()))
+                .andExpect(jsonPath(path + "details.externalColor").value(car.getDetails().getExternalColor()))
+                .andExpect(jsonPath(path + "details.mileage").value(car.getDetails().getMileage()))
+                .andExpect(jsonPath(path + "details.productionYear").value(car.getDetails().getProductionYear()))
+                .andExpect(jsonPath(path + "details.modelYear").value(car.getDetails().getModelYear()))
+                .andExpect(jsonPath(path + "location.lat").value(car.getLocation().getLat()))
+                .andExpect(jsonPath(path + "location.lon").value(car.getLocation().getLon()))
+                .andExpect(jsonPath(path + "_links.self.href").value(containsString("/cars/" + car.getId())));
     }
 
     /**
@@ -96,10 +105,29 @@ public class CarControllerTest {
      */
     @Test
     public void findCar() throws Exception {
-        /**
-         * TODO: Add a test to check that the `get` method works by calling
-         *   a vehicle by ID. This should utilize the car from `getCar()` below.
-         */
+
+        Car car = carService.list().get(0);
+        Long vehicleId = car.getId();
+
+        mvc.perform(get("/cars/{id}", vehicleId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/hal+json"))
+                .andExpect(jsonPath("$.id").value(car.getId()))
+                .andExpect(jsonPath("$.condition").value(car.getCondition().toString()))
+                .andExpect(jsonPath("$.details.manufacturer.name").value(car.getDetails().getManufacturer().getName()))
+                .andExpect(jsonPath("$.details.manufacturer.code").value(car.getDetails().getManufacturer().getCode()))
+                .andExpect(jsonPath("$.details.body").value(car.getDetails().getBody()))
+                .andExpect(jsonPath("$.details.model").value(car.getDetails().getModel()))
+                .andExpect(jsonPath("$.details.engine").value(car.getDetails().getEngine()))
+                .andExpect(jsonPath("$.details.fuelType").value(car.getDetails().getFuelType()))
+                .andExpect(jsonPath("$.details.numberOfDoors").value(car.getDetails().getNumberOfDoors()))
+                .andExpect(jsonPath("$.details.externalColor").value(car.getDetails().getExternalColor()))
+                .andExpect(jsonPath("$.details.mileage").value(car.getDetails().getMileage()))
+                .andExpect(jsonPath("$.details.productionYear").value(car.getDetails().getProductionYear()))
+                .andExpect(jsonPath("$.details.modelYear").value(car.getDetails().getModelYear()))
+                .andExpect(jsonPath("$.location.lat").value(car.getLocation().getLat()))
+                .andExpect(jsonPath("$.location.lon").value(car.getLocation().getLon()))
+                .andExpect(jsonPath("$._links.self.href").value(containsString("/cars/" + vehicleId)));
     }
 
     /**
@@ -108,18 +136,20 @@ public class CarControllerTest {
      */
     @Test
     public void deleteCar() throws Exception {
-        /**
-         * TODO: Add a test to check whether a vehicle is appropriately deleted
-         *   when the `delete` method is called from the Car Controller. This
-         *   should utilize the car from `getCar()` below.
-         */
+
+        Car car = carService.list().get(0);
+        Long vehicleId = car.getId();
+
+        mvc.perform(delete("/cars/{id}", vehicleId)).andExpect(status().isNoContent());
+
+        verify(carService, times(1)).delete(vehicleId);
     }
 
     /**
      * Creates an example Car object for use in testing.
      * @return an example Car object
      */
-    private Car getCar() {
+    public static Car getCar() {
         Car car = new Car();
         car.setLocation(new Location(40.730610, -73.935242));
         Details details = new Details();
