@@ -1,7 +1,9 @@
 package com.udacity.vehicles_api.client.maps;
 
 import com.udacity.vehicles_api.domain.Location;
+
 import java.util.Objects;
+
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +16,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Component
 public class MapsClient {
     private static final Logger log = LoggerFactory.getLogger(MapsClient.class);
-    private final WebClient client;
+    private final WebClient.Builder webClientMapsBuilder;
     private final ModelMapper mapper;
 
     // Cannot use required args constructor due to Spring Boot requesting that the WebClient be named maps.
-    public MapsClient(WebClient maps, ModelMapper mapper) { this.client = maps; this.mapper = mapper; }
+    public MapsClient(WebClient.Builder webClientMapsBuilder, ModelMapper mapper) { this.webClientMapsBuilder = webClientMapsBuilder; this.mapper = mapper; }
 
     /**
      * Gets an address from the Maps client, given latitude and longitude.
@@ -28,7 +30,7 @@ public class MapsClient {
      */
     public Location getAddress(Location location) {
         try {
-            Address address = client.get().uri(uriBuilder -> uriBuilder.path("/maps/").queryParam("lat", location.getLat()).queryParam("lon", location.getLon()).build()).retrieve().bodyToMono(Address.class).block();
+            Address address = webClientMapsBuilder.build().get().uri(uriBuilder -> uriBuilder.path("/maps").queryParam("lat", location.getLat()).queryParam("lon", location.getLon()).build()).retrieve().bodyToMono(Address.class).block();
             mapper.map(Objects.requireNonNull(address), location);
             return location;
         } catch (Exception e) {

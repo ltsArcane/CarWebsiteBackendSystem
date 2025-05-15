@@ -33,13 +33,13 @@ public class VehiclesApiApplication {
 
     @Bean ModelMapper modelMapper() { return new ModelMapper(); }
 
-    @Bean(name="maps") // Not loadbalanced as it's an external API.
-    WebClient maps(WebClient.Builder builder, @Value("${maps.endpoint}") String endpoint) { 
-        return builder.baseUrl(endpoint).build(); 
+    @Bean(name="webClientMapsBuilder")
+    WebClient.Builder webClientMapsBuilder() { 
+        return WebClient.builder().baseUrl("http://localhost:9191");
     }
 
-    @LoadBalanced @Bean(name = "pricing") // Can be loadbalanced due to Eureka.
-    WebClient pricing(WebClient.Builder builder, @Value("${pricing.endpoint}") String endpoint) { 
-        return builder.baseUrl(endpoint).build(); 
+    @Bean(name = "webClientPricingBuilder") @LoadBalanced
+    WebClient.Builder webClientPricingBuilder() { 
+        return WebClient.builder().baseUrl("http://pricing-service");
     }
 }
