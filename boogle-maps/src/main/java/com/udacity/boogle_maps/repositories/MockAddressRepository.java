@@ -25,13 +25,13 @@ public class MockAddressRepository {
     public static Address getRandom() {
         String raw = ADDRESSES.get(RNG.nextInt(ADDRESSES.size()));
         String[] split = raw.split(",", 2);
-        String street = split[0].trim();
+        String address = split[0].trim();
         String[] locationParts = split[1].trim().split(" ");
         int count = locationParts.length;
         String city = String.join(" ", Arrays.copyOf(locationParts, count - 2));
         String state = locationParts[count - 2];
         String zip = locationParts[count - 1];
 
-        return new Address(street, city, state, zip);
+        return new Address(address, city, state, zip);
     }
 }
