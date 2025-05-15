@@ -4,7 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
@@ -12,6 +11,6 @@ import lombok.NoArgsConstructor;
  */
 @Entity @NoArgsConstructor @AllArgsConstructor @Data
 public class Manufacturer {
-    @Id @Getter private Integer code;
-    @Getter private String name;
+    @Id private Integer code;
+    private String name;
 }
