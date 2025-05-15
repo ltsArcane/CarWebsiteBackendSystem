@@ -1,6 +1,7 @@
 package com.udacity.vehicles_api;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.udacity.vehicles_api.client.maps.MapsClient;
@@ -13,16 +14,12 @@ import com.udacity.vehicles_api.domain.manufacturer.Manufacturer;
 import com.udacity.vehicles_api.domain.manufacturer.ManufacturerRepository;
 import com.udacity.vehicles_api.service.CarService;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 @SpringBootTest
 class VehiclesApiApplicationTests {
-
-	private final ManufacturerRepository manufacturerRepository;
-    private final CarService carService;
-    private final PriceClient priceClient;
-    private final MapsClient mapsClient;
+	@Autowired private ManufacturerRepository manufacturerRepository;
+    @Autowired private CarService carService;
+    @Autowired private MapsClient mapsClient;
+    @Autowired private PriceClient priceClient;
 
 	@Test
 	void contextLoads() {
