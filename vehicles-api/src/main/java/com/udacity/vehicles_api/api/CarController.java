@@ -49,9 +49,9 @@ class CarController {
      * @return all information for the requested vehicle
      */
     @GetMapping("/{id}")
-    EntityModel<Car> get(@PathVariable Long id) {
+    ResponseEntity<?> get(@PathVariable Long id) {
         Car car = carService.findById(id);
-        return assembler.toModel(car);
+        return ResponseEntity.ok(assembler.toModel(car));
     }
 
     /**
@@ -63,6 +63,7 @@ class CarController {
     @PostMapping
     ResponseEntity<?> post(@Valid @RequestBody Car car) throws URISyntaxException {
         Car savedCar = carService.save(car);
+        savedCar = carService.findById(savedCar.getId()); // Triggers Map and Price WebClient calls.
         EntityModel<Car> resource = assembler.toModel(savedCar);
         return ResponseEntity.created(new URI(resource.getRequiredLink("self").getHref())).body(resource);     
     }
@@ -77,6 +78,7 @@ class CarController {
     ResponseEntity<?> put(@PathVariable Long id, @Valid @RequestBody Car car) {
         car.setId(id);
         Car updatedCar = carService.save(car);
+        updatedCar = carService.findById(updatedCar.getId()); // Triggers Map and Price WebClient calls.
         EntityModel<Car> resource = assembler.toModel(updatedCar);
         return ResponseEntity.ok(resource);
     }
